@@ -13,9 +13,7 @@ import javax.persistence.Table;
 @Table(name = "query_search")
 public class QuerySearch implements Serializable {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = -7684121225066762427L;
 	
 	

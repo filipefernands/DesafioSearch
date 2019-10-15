@@ -42,8 +42,7 @@ public class GoogleSearchController {
 	
 	
 	/**
-	 * Executa a pesquisa no google ou base de dados local caso query informada já tenha sido 
-	 * pesquisada.
+	 * Realiza pesquisa no google
 	 * 
 	 * @param query
 	 * @return <response>
@@ -52,14 +51,14 @@ public class GoogleSearchController {
 	public ResponseEntity<Object> search(@RequestParam("query") String query) throws IOException {
 				
 		
-		// Checa se a query informada já foi pesquisada
+		// Realiza uma consulta para checar se a query informada já foi pesquisa
 		Optional<QuerySearch> querySearch = this.querySearchService.findByQuery(query);
 
 		// Se não for encontrado resultados na base local a pesquisa é realizada no google
 		if(!querySearch.isPresent()) {
 			
 			/**
-			 * Devido o google limitar sua API de buscas em 100 consultas diárias, utilizei a abaordagem 
+			 * Devido o google limitar sua API de buscas em 100 consultas diárias, utilizei a abordagem 
 			 * de raspagem de dados, onde as informações são extraídas da página HTML
 			 */
 			final Document bodyHTML = Jsoup.connect(GOOGLE_SEARCH_URL + query + "&num=20").get();
@@ -83,7 +82,6 @@ public class GoogleSearchController {
 			}
 			
 			this.googleSearchService.persistir(listResult);
-			
 			this.response = listToJson(this.googleSearchService.findByIdQuery(addQuery.getId()));
 			
 		}else {
@@ -94,8 +92,8 @@ public class GoogleSearchController {
 		
 		
 		JSONObject response = new JSONObject();
-		response.putOnce("query", query);
-		response.putOnce("result", this.response);
+		response.put("query", query);
+		response.put("result", this.response);		
 		
 		return ResponseEntity.ok(response.toMap());
 		
@@ -103,7 +101,7 @@ public class GoogleSearchController {
 	
 	
 	/**
-	 * Converte a lista com o resultado da pesquisa em JSON
+	 * Converte a lista de pesquisa em um JSON
 	 * 
 	 * {
 	 * 	result: [{"text": "", "url": ""}, ...]

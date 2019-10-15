@@ -23,5 +23,5 @@ public interface GoogleSearchService {
      * @return List<GoogleSearch>
      */
 	List<GoogleSearch> findByIdQuery(Long idQuery);
-
+	
 }
